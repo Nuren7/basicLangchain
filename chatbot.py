@@ -1,19 +1,27 @@
 
 import os
 
-from langchain_openai import ChatOpenAI
+from dotenv import load_dotenv
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
+from langchain_groq import ChatGroq
+
+
+load_dotenv()
 
 
 def main():
   
-    api_key = os.getenv("OPENAI_API_KEY")
+    api_key = os.getenv("GROQ_API_KEY")
     if not api_key:
-        print("Error: Set the OPENAI_API_KEY environment variable.")
-        print("Example: export OPENAI_API_KEY='your-key-here'")
+        print("Error: Set the GROQ_API_KEY environment variable.")
+        print("Add it to a .env file as GROQ_API_KEY=your-key-here")
         return
 
-    llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.7)
+    llm = ChatGroq(
+        model="llama-3.1-8b-instant",
+        temperature=0.7,
+        api_key=api_key,
+    )
     messages = [
         SystemMessage(content="You are a helpful and friendly assistant."),
     ]
