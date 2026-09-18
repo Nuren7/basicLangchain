@@ -1,6 +1,6 @@
 # Simple LangChain Tool-Calling Agent
 
-A small terminal chatbot using Python, LangChain, and Groq. It has two tools: a calculator and a current date/time tool.
+A small terminal chatbot using Python, LangChain, and Groq. It has three tools: a calculator, a current date/time tool, and a tool that calls the JSONPlaceholder API.
 
 ## How This Differs From the Previous Chatbot
 
@@ -10,7 +10,7 @@ The previous chatbot sent every user message directly to the language model and 
 
 ### What is a tool?
 
-A tool is a normal Python function with a name and description that the language model can use. This project has a `calculator` tool and a `current_date_time` tool.
+A tool is a normal Python function with a name and description that the language model can use. This project has `calculator`, `current_date_time`, and `placeholder_todo` tools. The third tool makes a real HTTP request to JSONPlaceholder.
 
 ### What is a tool call?
 
@@ -84,6 +84,7 @@ Type `exit`, `quit`, or `bye` to end the chat.
 3. `What is 18 / 3, and what time is it right now?` - requires both tools.
 4. `Explain in one sentence what LangChain is.` - does not require a tool.
 5. `Remember that my favorite color is green. What is my favorite color?` - uses conversation history.
+6. `Can you check todo item 1 from the placeholder API?` - requires the external API tool.
 
 ## Project Structure
 
@@ -101,7 +102,7 @@ Type `exit`, `quit`, or `bye` to end the chat.
 
 ### `tools.py`
 
-Defines the two Python functions decorated with LangChain's `@tool`. The decorator gives each function a name and description that can be provided to the model. `TOOLS` contains the tools made available to ChatGroq.
+Defines the three Python functions decorated with LangChain's `@tool`. The decorator gives each function a name and description that can be provided to the model. `placeholder_todo` calls `https://jsonplaceholder.typicode.com/todos/1`, and `TOOLS` contains all three tools made available to ChatGroq.
 
 ### `agent.py`
 

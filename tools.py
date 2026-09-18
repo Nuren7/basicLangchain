@@ -3,6 +3,7 @@ import operator
 from datetime import datetime
 
 from langchain_core.tools import tool
+import requests
 
 
 _OPERATORS = {
@@ -44,4 +45,22 @@ def current_date_time() -> str:
     return datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %Z")
 
 
-TOOLS = [calculator, current_date_time]
+@tool
+def placeholder_todo() -> str:
+    """Fetch todo item 1 from the JSONPlaceholder demo API."""
+    try:
+        response = requests.get(
+            "https://jsonplaceholder.typicode.com/todos/1",
+            timeout=10,
+        )
+        response.raise_for_status()
+        todo = response.json()
+        return (
+            f"Todo {todo['id']}: {todo['title']} "
+            f"(completed: {todo['completed']})"
+        )
+    except (requests.RequestException, ValueError, KeyError) as error:
+        return f"Could not fetch the todo item: {error}"
+
+
+TOOLS = [calculator, current_date_time, placeholder_todo]
