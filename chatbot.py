@@ -2,9 +2,9 @@
 import os
 
 from dotenv import load_dotenv
-from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
-from langchain_groq import ChatGroq
+from langchain_core.messages import HumanMessage, SystemMessage
 
+from agent import create_agent, run_agent
 
 load_dotenv()
 
@@ -17,13 +17,14 @@ def main():
         print("Add it to a .env file as GROQ_API_KEY=your-key-here")
         return
 
-    llm = ChatGroq(
-        model="llama-3.1-8b-instant",
-        temperature=0.7,
-        api_key=api_key,
-    )
+    agent = create_agent(api_key)
     messages = [
-        SystemMessage(content="You are a helpful and friendly assistant."),
+        SystemMessage(
+            content=(
+                "You are a helpful assistant. Use the available tools when they "
+                "are useful, then explain the result clearly."
+            )
+        ),
     ]
 
     print("Simple LangChain Chatbot")
@@ -37,12 +38,8 @@ def main():
             print("Chatbot: Goodbye!")
             break
         messages.append(HumanMessage(content=user_input))
-
-        response = llm.invoke(messages)
-
-        print(f"Chatbot: {response.content}")
-
-        messages.append(AIMessage(content=response.content))
+        answer = run_agent(messages, agent)
+        print(f"Chatbot: {answer}")
 
 
 if __name__ == "__main__":
